@@ -64,6 +64,8 @@ def view_login_area():
     
     # Function to generate login captcha
     def generate_login_captcha():
+        url = "https://banglarbhumi.gov.in/BanglarBhumi/generateCaptcha"
+        
         headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:149.0) Gecko/20100101 Firefox/149.0',
         'Accept': 'image/avif,image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5',
@@ -78,9 +80,16 @@ def view_login_area():
         'Sec-Fetch-Site': 'same-origin',
         'Priority': 'u=5, i',
         }
-
+        
+        response = session.get(url, headers=headers)
+        img = Image.open(io.BytesIO(response.content))
+        img.show()
+        
+        
+    generate_login_captcha()
     login_area_data = {
         'cookies': get_cookies(),
+        'salt': get_salt_text(),
     }
     
     return login_area_data
@@ -88,7 +97,7 @@ def view_login_area():
 
 
 # Function to generate login OTP
-def generate_login_otp(username, password, salt):
+def generate_login_otp(username, password, salt, captcha, cookies):
     url = 'https://banglarbhumi.gov.in/BanglarBhumi/loginOTPGenerationAction.action'
     
     headers = {
@@ -102,7 +111,7 @@ def generate_login_otp(username, password, salt):
     'Origin': 'https://banglarbhumi.gov.in',
     'Sec-GPC': '1',
     'Connection': 'keep-alive',
-    'Cookie': 'lang=en; JSESSIONID=DCF9551FB2127DF439CD1FDBE338004C; LRicookie=BanglarBhumiApp5',
+    'Cookie': cookies,
     'Sec-Fetch-Dest': 'empty',
     'Sec-Fetch-Mode': 'cors',
     'Sec-Fetch-Site': 'same-origin',
@@ -112,28 +121,10 @@ def generate_login_otp(username, password, salt):
     data = {
     'userType': '2',
     'username': username,
-    'txtInput': 'WEGSY6',
+    'txtInput': captcha,
     'password': encrypt_pass(password, salt),
     'saltHashtext': salt,
     'ajax': 'true',
     }   
 
-    response = requests.post(url, headers=headers, data=data)
-
-
-
-
-
-
-
-
-# response = session.get("https://banglarbhumi.gov.in/BanglarBhumi/generateCaptcha", headers=headers)
-# # print(response.content)
-# img = Image.open(io.BytesIO(response.content))
-# # text = pytesseract.image_to_string(img)
-
-# # print(text)
-
-# img.show()
-
-# view_login_area()
+    response = session.post(url, headers=headers, data=data)
