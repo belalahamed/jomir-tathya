@@ -58,7 +58,7 @@ class BhumiApp:
     BORDER_FOCUS = "#1e88e5"
     PLACEHOLDER_COLOR = "#b0bec5"
     
-    def __init__(self, root, cookies=''):
+    def __init__(self, root, cookies):
         self.root = root
         self.root.title("Jomir Tathya")
         self.root.geometry("500x700")
