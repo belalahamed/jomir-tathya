@@ -5,13 +5,24 @@ Main entry point for the application
 """
 
 from ui.app import BhumiApp
+from ui.login_window import LoginForm
 import tkinter as tk
-
 
 def main():
     """Initialize and run the application"""
+    global root
     root = tk.Tk()
-    app = BhumiApp(root)
+    
+    def start_app(cookies):
+        # Clear login UI
+        for widget in root.winfo_children():
+            widget.destroy()
+
+        # Start main app with same root
+        BhumiApp(root, cookies)
+        
+    LoginForm(root, on_login_success=start_app)
+    
     root.mainloop()
 
 

@@ -1,7 +1,6 @@
 import requests
 from urllib3.util.ssl_ import create_urllib3_context
 from requests.adapters import HTTPAdapter
-from core.login import view_login_area
 
 class LegacyAdapter(HTTPAdapter):
     def init_poolmanager(self, *args, **kwargs):
@@ -127,7 +126,7 @@ def fetch_mouzas(dist_code, block_code):
     return mouza_obj_list
 
 # Function to fetch khatian info
-def fetch_khatian(dist_code, block_code, mouza_code, khatian_no, bata_khatian_no=""):
+def fetch_khatian(cookies, dist_code, block_code, mouza_code, khatian_no, bata_khatian_no=""):
     # URL to fetch khatian info
     url = 'https://banglarbhumi.gov.in/BanglarBhumi/khDetailsAction_LandInfo.action'
     
@@ -143,7 +142,7 @@ def fetch_khatian(dist_code, block_code, mouza_code, khatian_no, bata_khatian_no
     'Origin': 'https://banglarbhumi.gov.in',
     'Sec-GPC': '1',
     'Connection': 'keep-alive',
-    'Cookie': view_login_area()['cookies'],
+    'Cookie': cookies,
     'Sec-Fetch-Dest': 'empty',
     'Sec-Fetch-Mode': 'cors',
     'Sec-Fetch-Site': 'same-origin',
@@ -170,7 +169,7 @@ def fetch_khatian(dist_code, block_code, mouza_code, khatian_no, bata_khatian_no
     return khatian_info
     
 # Function to fetch plot info
-def fetch_plot(dist_code, block_code, mouza_code, plot_no, bata_plot_no=""):
+def fetch_plot(cookies, dist_code, block_code, mouza_code, plot_no, bata_plot_no=""):
     # URL to fetch plot info
     url = 'https://banglarbhumi.gov.in/BanglarBhumi/plotDetailsAction_LandInfo.action'
     
@@ -186,7 +185,7 @@ def fetch_plot(dist_code, block_code, mouza_code, plot_no, bata_plot_no=""):
     'Origin': 'https://banglarbhumi.gov.in',
     'Sec-GPC': '1',
     'Connection': 'keep-alive',
-    'Cookie': view_login_area()['cookies'],
+    'Cookie': cookies,
     'Sec-Fetch-Dest': 'empty',
     'Sec-Fetch-Mode': 'cors',
     'Sec-Fetch-Site': 'same-origin',

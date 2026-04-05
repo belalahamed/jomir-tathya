@@ -8,7 +8,6 @@ import random
 import string
 from core.login import view_login_area, generate_login_otp
 
-
 class LoginForm:
     """Modern login form UI with username, password, captcha"""
     
@@ -24,12 +23,13 @@ class LoginForm:
     ERROR_COLOR = "#d32f2f"
     SUCCESS_COLOR = "#388e3c"
     
-    def __init__(self, root):
+    def __init__(self, root, on_login_success=None):
         self.root = root
         self.root.title("Login - Jomir Tathya")
         self.root.geometry("450x650")
         self.root.resizable(False, False)
         self.root.config(bg=self.BG_COLOR)
+        self.on_login_success = on_login_success
         
         # Initialize cookies and salt variables
         self.cookies = None
@@ -376,6 +376,9 @@ class LoginForm:
         self.status_label.config(text="✓ OTP verified successfully!", fg=self.SUCCESS_COLOR)
         messagebox.showinfo("Success", f"Welcome, {self.username}!\n\nLogin successful with OTP verification!")
         
+        if self.on_login_success:
+            self.on_login_success(self.cookies)
+        
         # Reset form
         self.username = None
         self.password = None
@@ -384,7 +387,7 @@ class LoginForm:
         self.password_var.set("")
         self.captcha_input_var.set("")
         self.captcha_text = self._generate_captcha()
-        self._setup_ui()
+        # self._setup_ui()
 
 
 if __name__ == "__main__":

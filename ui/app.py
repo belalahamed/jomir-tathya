@@ -6,7 +6,7 @@ import webbrowser
 import os
 from bs4 import BeautifulSoup
 from core.fetch_request import fetch_districts, fetch_blocks, fetch_mouzas, fetch_khatian, fetch_plot
-
+from ui.login_window import LoginForm
 
 class TableParser:
     """Parse HTML tables using BeautifulSoup - tolerates malformed HTML"""
@@ -58,7 +58,7 @@ class BhumiApp:
     BORDER_FOCUS = "#1e88e5"
     PLACEHOLDER_COLOR = "#b0bec5"
     
-    def __init__(self, root):
+    def __init__(self, root, cookies=''):
         self.root = root
         self.root.title("Jomir Tathya")
         self.root.geometry("500x700")
@@ -73,6 +73,7 @@ class BhumiApp:
         self.district_codes = {}
         self.block_codes = {}
         self.mouza_codes = {}
+        self.cookies = cookies
         
         # Header
         header_frame = tk.Frame(self.root, bg=self.PRIMARY_COLOR)
@@ -377,9 +378,9 @@ class BhumiApp:
     def _search_property_thread(self, dist_code, block_code, mouza_code, number_no, bata_no, property_type):
         try:
             if property_type == "khatina":
-                result = fetch_khatian(dist_code, block_code, mouza_code, number_no, bata_no)
+                result = fetch_khatian(self.cookies, dist_code, block_code, mouza_code, number_no, bata_no)
             else:
-                result = fetch_plot(dist_code, block_code, mouza_code, number_no, bata_no)
+                result = fetch_plot(self.cookies, dist_code, block_code, mouza_code, number_no, bata_no)
             self.root.after(0, lambda: self._show_search_result(result))
         except Exception as e:
             self.root.after(0, lambda: messagebox.showerror("Error", f"Search failed: {str(e)}"))
@@ -592,4 +593,11 @@ class BhumiApp:
         self.block_combo.config(state="disabled")
         self.mouza_combo.config(state="disabled")
         self.status_label.config(text="✓ Form cleared", fg=self.SUCCESS_COLOR)
+        
 
+# def main():
+#     root = tk.Tk()
+#     app = BhumiApp(root)
+#     root.mainloop()
+    
+# main()
