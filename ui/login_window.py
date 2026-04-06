@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import tkinter as tk
 from tkinter import ttk, messagebox
 import random
-import string
+from PIL import Image, ImageTk
 from core.login import view_login_area, generate_login_otp, validate_login_otp
 
 class LoginForm:
@@ -34,27 +34,35 @@ class LoginForm:
         # Initialize cookies and salt variables
         self.cookies = None
         self.salt = None
+        self.captcha_image = None # PIL Image object
+        self.tk_captcha_image = None # ImageTk.PhotoImage object
         
         # Store login credentials for OTP verification
         self.username = None
         self.password = None
+        self.captcha = None # Store the captcha text entered by user
         
-        # Generate initial captcha
-        self.captcha_text = self._generate_captcha()
+        # Fetch initial captcha and login data BEFORE setting up UI
+        self._fetch_initial_captcha()
         
         self._setup_ui()
-        
-        # Call view_login_area when form is opened and assign cookies and salt
+    
+    def _fetch_initial_captcha(self):
         try:
             login_data = view_login_area()
             self.cookies = login_data.get('cookies')
             self.salt = login_data.get('salt')
+            self.captcha_image = login_data.get('captcha') # This is the PIL Image
+            if self.captcha_image:
+                self.tk_captcha_image = ImageTk.PhotoImage(self.captcha_image)
+            else:
+                messagebox.showerror("Error", "Failed to load captcha image.")
         except Exception as e:
             print(f"Error calling view_login_area: {e}")
     
-    def _generate_captcha(self):
-        """Generate a random 6-character captcha"""
-        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    # def _generate_captcha(self):
+    #     """Generate a random 6-character captcha"""
+    #     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
     
     def _setup_ui(self):
         """Build the login form UI"""
@@ -143,19 +151,16 @@ class LoginForm:
         ).pack(anchor=tk.W, pady=(15, 10))
         
         # Captcha Display
-        captcha_frame = tk.Frame(self.inner, bg=self.BORDER_COLOR, height=60)
+        captcha_frame = tk.Frame(self.inner, bg=self.BORDER_COLOR) # Removed fixed height
         captcha_frame.pack(fill=tk.X, pady=(0, 10))
-        captcha_frame.pack_propagate(False)
         
         captcha_inner = tk.Frame(captcha_frame, bg="white")
         captcha_inner.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
         
         self.captcha_label = tk.Label(
             captcha_inner,
-            text=self.captcha_text,
-            font=("Courier New", 24, "bold"),
+            image=self.tk_captcha_image, # Display image instead of text
             bg="white",
-            fg=self.PRIMARY_COLOR,
             padx=10,
             pady=10
         )
@@ -172,7 +177,7 @@ class LoginForm:
             padx=8,
             pady=8,
             cursor="hand2",
-            command=self._refresh_captcha
+            command=self._refresh_captcha # This will now fetch a new image
         )
         refresh_btn.pack(side=tk.RIGHT, padx=5)
         
@@ -264,11 +269,7 @@ class LoginForm:
             self.status_label.config(text="❌ Enter captcha code", fg=self.ERROR_COLOR)
             return
         
-        # if captcha_input != self.captcha_text:
-        #     self.status_label.config(text="❌ Incorrect captcha", fg=self.ERROR_COLOR)
-        #     self._refresh_captcha()
-        #     return
-        
+        # Store user's captcha input
         # Store username for OTP verification
         self.username = username
         self.password = password
@@ -377,8 +378,10 @@ class LoginForm:
         
         if validate_otp_res['checkmsg'] == 'error':
             print('login failed!')
-            self.captcha_text = self._generate_captcha()
-            self._setup_ui()
+            self.status_label.config(text="❌ Login failed. Please try again.", fg=self.ERROR_COLOR)
+            self._refresh_captcha() # Fetch new captcha image and update UI
+            self.otp_var.set("") # Clear OTP input
+            return # Stop further execution on failure
             
         self.status_label.config(text="✓ OTP verified successfully!", fg=self.SUCCESS_COLOR)
         messagebox.showinfo("Success", f"Welcome, {self.username}!\n\nLogin successful with OTP verification!")
@@ -393,8 +396,6 @@ class LoginForm:
         self.username_var.set("")
         self.password_var.set("")
         self.captcha_input_var.set("")
-        self.captcha_text = self._generate_captcha()
-        # self._setup_ui()
 
 
 if __name__ == "__main__":

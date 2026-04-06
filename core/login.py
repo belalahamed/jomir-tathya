@@ -83,14 +83,15 @@ def view_login_area():
         }
         
         response = session.get(url, headers=headers)
-        img = Image.open(io.BytesIO(response.content))
-        img.show()
+        captcha_img = Image.open(io.BytesIO(response.content))
+        return captcha_img
         
         
-    generate_login_captcha()
+    captcha_img = generate_login_captcha()
     login_area_data = {
         'cookies': get_cookies(),
         'salt': get_salt_text(),
+        'captcha': captcha_img,
     }
     
     return login_area_data
