@@ -119,9 +119,9 @@ class BhumiApp:
         radio_frame = tk.Frame(inner_frame, bg=self.CARD_BG)
         radio_frame.grid(row=4, column=1, sticky=tk.W, pady=(20, 8))
         
-        self.property_type = tk.StringVar(value="khatina")
-        tk.Radiobutton(radio_frame, text="🏠 Khatina", variable=self.property_type,
-                      value="khatina", command=self.on_property_type_changed,
+        self.property_type = tk.StringVar(value="khatian")
+        tk.Radiobutton(radio_frame, text="🏠 Khatian", variable=self.property_type,
+                      value="khatian", command=self.on_property_type_changed,
                       font=("Segoe UI", 10), bg=self.CARD_BG, fg=self.TEXT_COLOR).pack(side=tk.LEFT, padx=10)
         tk.Radiobutton(radio_frame, text="📦 Plot", variable=self.property_type,
                       value="plot", command=self.on_property_type_changed,
@@ -330,7 +330,7 @@ class BhumiApp:
         self.status_label.config(text="✓ Ready", fg=self.SUCCESS_COLOR)
     
     def on_property_type_changed(self):
-        show_khatian = self.property_type.get() == "khatina"
+        show_khatian = self.property_type.get() == "khatian"
         self.khatian_label.grid() if show_khatian else self.khatian_label.grid_remove()
         self.khatian_entry.grid() if show_khatian else self.khatian_entry.grid_remove()
         self.bata_label.grid() if show_khatian else self.bata_label.grid_remove()
@@ -341,7 +341,6 @@ class BhumiApp:
         self.bata_plot_entry.grid() if not show_khatian else self.bata_plot_entry.grid_remove()
     
     def search_property(self):
-        print("search prop")
         district_name = self.district_var.get()
         block_name = self.block_var.get()
         mouza_name = self.mouza_var.get()
@@ -351,7 +350,7 @@ class BhumiApp:
             return
         
         property_type = self.property_type.get()
-        if property_type == "khatina":
+        if property_type == "khatian":
             khatian_no = self.khatian_var.get().strip()
             if not khatian_no:
                 messagebox.showwarning("Missing Data", "Please enter Khatian Number")
@@ -377,11 +376,9 @@ class BhumiApp:
         thread.start()
     
     def _search_property_thread(self, dist_code, block_code, mouza_code, number_no, bata_no, property_type):
-        print("search_prop thre")
         try:
-            if property_type == "khatina":
+            if property_type == "khatian":
                 result = fetch_khatian(self.cookies, dist_code, block_code, mouza_code, number_no, bata_no)
-                print("fetch") #Comm
             else:
                 result = fetch_plot(self.cookies, dist_code, block_code, mouza_code, number_no, bata_no)
             self.root.after(0, lambda: self._show_search_result(result))
@@ -592,7 +589,7 @@ class BhumiApp:
         self.khatian_var.set("")
         self.bata_var.set("")
         self.plot_var.set("")
-        self.property_type.set("khatina")
+        self.property_type.set("khatian")
         self.block_combo.config(state="disabled")
         self.mouza_combo.config(state="disabled")
         self.status_label.config(text="✓ Form cleared", fg=self.SUCCESS_COLOR)
