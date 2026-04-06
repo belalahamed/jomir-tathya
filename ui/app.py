@@ -341,6 +341,7 @@ class BhumiApp:
         self.bata_plot_entry.grid() if not show_khatian else self.bata_plot_entry.grid_remove()
     
     def search_property(self):
+        print("search prop")
         district_name = self.district_var.get()
         block_name = self.block_var.get()
         mouza_name = self.mouza_var.get()
@@ -376,14 +377,16 @@ class BhumiApp:
         thread.start()
     
     def _search_property_thread(self, dist_code, block_code, mouza_code, number_no, bata_no, property_type):
+        print("search_prop thre")
         try:
             if property_type == "khatina":
                 result = fetch_khatian(self.cookies, dist_code, block_code, mouza_code, number_no, bata_no)
+                print("fetch") #Comm
             else:
                 result = fetch_plot(self.cookies, dist_code, block_code, mouza_code, number_no, bata_no)
             self.root.after(0, lambda: self._show_search_result(result))
         except Exception as e:
-            self.root.after(0, lambda: messagebox.showerror("Error", f"Search failed: {str(e)}"))
+            self.root.after(0, lambda e=e: messagebox.showerror("Error", f"Search failed: {str(e)}"))
         finally:
             self.root.after(0, lambda: self.search_button.config(state="normal"))
     
@@ -593,11 +596,3 @@ class BhumiApp:
         self.block_combo.config(state="disabled")
         self.mouza_combo.config(state="disabled")
         self.status_label.config(text="✓ Form cleared", fg=self.SUCCESS_COLOR)
-        
-
-# def main():
-#     root = tk.Tk()
-#     app = BhumiApp(root)
-#     root.mainloop()
-    
-# main()

@@ -1,7 +1,8 @@
 import requests
 from urllib3.util.ssl_ import create_urllib3_context
 from requests.adapters import HTTPAdapter
-from core.encrypt_password import encrypt_pass
+from core.encrypt import encrypt_pass, encrypt_user_id
+from core.encode import encode_user_type, encode_user_id
 from bs4 import BeautifulSoup
 from PIL import Image
 import io
@@ -95,7 +96,6 @@ def view_login_area():
     return login_area_data
 
 
-
 # Function to generate login OTP
 def generate_login_otp(username, password, salt, captcha, cookies):
     url = 'https://banglarbhumi.gov.in/BanglarBhumi/loginOTPGenerationAction.action'
@@ -128,3 +128,41 @@ def generate_login_otp(username, password, salt, captcha, cookies):
     }   
 
     response = session.post(url, headers=headers, data=data)
+    
+
+# Function to validate login OTP
+def validate_login_otp(username, password, salt, otp, cookies):
+    url = 'https://banglarbhumi.gov.in/BanglarBhumi/login.action'
+    
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:149.0) Gecko/20100101 Firefox/149.0',
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Referer': 'https://banglarbhumi.gov.in/BanglarBhumi/Home',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Origin': 'https://banglarbhumi.gov.in',
+        'Sec-GPC': '1',
+        'Connection': 'keep-alive',
+        'Cookie': cookies,
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin',
+        'Priority': 'u=0',
+    }
+
+    data = {
+        'userType': encode_user_type('2'),
+        'username': encode_user_id(username),
+        'password': encrypt_pass(password, salt),
+        'saltHashtext': salt,
+        'retypepassword': encrypt_user_id(username, salt),
+        'txtOTP': otp,
+        'ajax': 'true',
+    }
+
+    response = session.post(url, headers=headers, data=data)
+    data = response.json()
+    return data

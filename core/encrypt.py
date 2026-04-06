@@ -18,3 +18,13 @@ def encrypt_pass(password: str, salt: str) -> str:
     encrypted_password = sha256_hex(salted_md5)
 
     return encrypted_password
+
+def encrypt_user_id(username: str, salt: str) -> str:
+    if not username:
+        return ""
+    
+    md5_encrypted = md5_hex(username)
+    salted_md5 = md5_with_key(salt, md5_encrypted)
+    encrypted_user_id = salted_md5
+
+    return encrypted_user_id

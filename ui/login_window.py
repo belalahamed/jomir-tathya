@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import random
 import string
-from core.login import view_login_area, generate_login_otp
+from core.login import view_login_area, generate_login_otp, validate_login_otp
 
 class LoginForm:
     """Modern login form UI with username, password, captcha"""
@@ -373,6 +373,13 @@ class LoginForm:
             return
         
         # Success message
+        validate_otp_res = validate_login_otp(username=self.username_var.get().strip(), password=self.password, salt=self.salt, otp=otp_input, cookies=self.cookies)
+        
+        if validate_otp_res['checkmsg'] == 'error':
+            print('login failed!')
+            self.captcha_text = self._generate_captcha()
+            self._setup_ui()
+            
         self.status_label.config(text="✓ OTP verified successfully!", fg=self.SUCCESS_COLOR)
         messagebox.showinfo("Success", f"Welcome, {self.username}!\n\nLogin successful with OTP verification!")
         

@@ -127,6 +127,7 @@ def fetch_mouzas(dist_code, block_code):
 
 # Function to fetch khatian info
 def fetch_khatian(cookies, dist_code, block_code, mouza_code, khatian_no, bata_khatian_no=""):
+    print("called fetch kh")
     # URL to fetch khatian info
     url = 'https://banglarbhumi.gov.in/BanglarBhumi/khDetailsAction_LandInfo.action'
     
@@ -161,12 +162,16 @@ def fetch_khatian(cookies, dist_code, block_code, mouza_code, khatian_no, bata_k
     'ajax': 'true',
     }
 
+    print("before res")
     # Response to the fetch khatian info request
     response = session.post(url, headers=headers, data=data) # Response object(dictionary)
-    khatian_info = response.json()["msgShow"] # Parsing response object in JSON and extracting khatian info from JSON data
-    
+    print("after response")
+    print(cookies)
+    # khatian_info = response.json()["msgShow"] # Parsing response object in JSON and extracting khatian info from JSON data
+    print("khatian_info")
+    print(response.content)
     # Returning khatian info in HTML format
-    return khatian_info
+    # return khatian_info
     
 # Function to fetch plot info
 def fetch_plot(cookies, dist_code, block_code, mouza_code, plot_no, bata_plot_no=""):
