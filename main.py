@@ -1,34 +1,46 @@
 import customtkinter as ctk
-import multiprocessing
+from pathlib import Path
 
-from src.ui import AppScreen, LoginScreen, PropertyScreen
+from src.ui import AppScreen
+from assets import app_icon as APP_ICON
 
-class JomirTathyaApp:
-    
+
+class RootApp(ctk.CTk):
+    """Root App"""
+
     def __init__(self):
-        
-        self.app = AppScreen()
-        self.app.mainloop()
+        """Initialize Root App"""
 
-    def show_login(self):
-        """Initialize and display the Login Screen"""
-        self.login_app = LoginScreen()
-        # Define the transition callback
-        self.login_app.on_login_success = self.on_login_completed
-        self.login_app.mainloop()
+        super().__init__()
 
-    def on_login_completed(self):
-        """Handle transition from Login to Property Lookup"""
-        # Extract cookies generated during login
-        cookies = self.login_app.login.get_cookies()
+        self.iconbitmap(APP_ICON)  # * APP ICON
+        self.title("Banglarbhumi")  # * ROOT APP TITLE
+        self.after(0, self.maximize)
+
+        # * Screens Container Frame (parent_frame)
+        self.container_frame = ctk.CTkFrame(self)
+        self.container_frame.pack(fill="both", expand=True)
+
+        """
+        *Create the app screen frame and 
+        *store it in 'self.app_screen_frame' as property of RootApp(self),
+        *so that it can be accessible through all over the application through the RootApp(self)
+        """
+        self.app_screen_frame = AppScreen(self.container_frame, self)
+        self.show_frame(self.app_screen_frame)  # * Display app screen frame
+
+    def show_frame(self, frame):
+        """Render different screen frames by passing its instance reference"""
         
-        # Destroy the login window
-        self.login_app.destroy()
-        
-        # Initialize and start the Property Screen with authenticated cookies
-        self.property_app = PropertyScreen(session_cookies=cookies)
-        self.property_app.mainloop()
+        frame.pack(fill="both", expand=True)
+        frame.tkraise()
+
+    def maximize(self):
+        """Show screen in full window view"""
+
+        self.state("zoomed")
+
 
 if __name__ == "__main__":
-    multiprocessing.freeze_support()
-    JomirTathyaApp()
+    root = RootApp()
+    root.mainloop()

@@ -1,5 +1,5 @@
 from .app_screen import AppScreen
 from .login_screen import LoginScreen
-from .property_screen import PropertyScreen
+from .property_search_screen import PropertySearchScreen
 
-__all__ = ["AppScreen", "LoginScreen", "PropertyScreen"]
+__all__ = ["AppScreen", "LoginScreen", "PropertySearchScreen"]
