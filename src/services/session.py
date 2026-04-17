@@ -3,6 +3,8 @@ from urllib3.util.ssl_ import create_urllib3_context
 from requests.adapters import HTTPAdapter
 
 class LegacyAdapter(HTTPAdapter):
+    """Enabling Legacy HTTP Adapter"""
+    
     def init_poolmanager(self, *args, **kwargs):
         ctx = create_urllib3_context()
         ctx.options |= 0x4  # Enable legacy renegotiation
