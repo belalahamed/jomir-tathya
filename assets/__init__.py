@@ -1,10 +1,6 @@
-import os
+from pathlib import Path
 
-BASE_DIR = os.path.dirname(__file__)
+app_icon = Path(__file__).parent / "assets" / "images" / "app_icon.ico"
+app_logo = Path(__file__).parent / "assets" / "images" / "app_logo.png"
 
-IMAGES = {
-    "logo": os.path.join(BASE_DIR, "images", "jomir-tathya-logo.png")
-}
-
-def get_image(name):
-    return IMAGES.get(name)
+__all__ = ["app_icon", "app_logo"]
