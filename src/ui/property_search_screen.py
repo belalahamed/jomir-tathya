@@ -49,293 +49,392 @@ class PropertySearchScreen(ctk.CTkFrame):
         self.property_type_var = ctk.StringVar(value="Khatian")
         self.current_html = ""
 
-        # Container frame for Propery Lookup Form
+        # * Main Grid Configuration for Property Search Screen
+        self.grid_columnconfigure(0, weight=0)  # Form column (fixed width)
+        self.grid_columnconfigure(1, weight=1)  # Results column (expandable)
+        self.grid_rowconfigure(0, weight=1)
+
+        # * Container frame for Property Lookup Form
         self.property_form_frame = ctk.CTkFrame(
             self,
             fg_color="#FFFFFF",
-            width=400,
+            width=420,
+            corner_radius=15,
             border_width=1,
             border_color="#E5E5E7",
         )
-        self.property_form_frame.pack(side="left", fill="y", padx=0, pady=0)
+        self.property_form_frame.grid(column=0, row=0, sticky="nsew", padx=15, pady=15)
         self.property_form_frame.pack_propagate(False)
 
+        # * Grid configuration for form frame
+        self.property_form_frame.grid_columnconfigure(0, weight=1)
+        self.property_form_frame.grid_columnconfigure(1, weight=1)
+        self.property_form_frame.grid_rowconfigure(
+            (0, 1, 2, 3, 4, 5, 6, 7, 8, 9), weight=0
+        )
+        self.property_form_frame.grid_rowconfigure(10, weight=1)
+
+        # * Header frame with back button and title
+        self.header_frame = ctk.CTkFrame(
+            self.property_form_frame, fg_color="transparent"
+        )
+        self.header_frame.grid(
+            row=0, column=0, columnspan=2, sticky="nsew", padx=15, pady=(15, 10)
+        )
+        self.header_frame.grid_columnconfigure(0, weight=1)
+        self.header_frame.grid_columnconfigure(1, weight=0)
+        self.header_frame.grid_rowconfigure(0, weight=1)
+
         # * Back Button
-        self.back_btn_img = ctk.CTkImage(light_image=Image.open(BACK_ICON))
+        self.back_btn_img = ctk.CTkImage(
+            light_image=Image.open(BACK_ICON), size=(24, 24)
+        )
         self.back_btn = ctk.CTkButton(
-            self.property_form_frame,
+            self.header_frame,
             text="",
             image=self.back_btn_img,
-            width=50,
-            height=50,
+            width=40,
+            height=40,
+            fg_color="#0066CC",
+            hover_color="#0052A3",
+            corner_radius=6,
             command=self._open_app_screen,
         )
-        self.back_btn.place(relx=0, y=30)
+        self.back_btn.grid(row=0, column=1, sticky="e", padx=(10, 0))
 
-        # Header Label
+        # * Header Label
         self.header_label = ctk.CTkLabel(
-            self.property_form_frame,
-            text="Know Your Property",
-            font=("Calibri", 26, "bold"),
-            text_color="#007AFF",
+            self.header_frame,
+            text="🏠 Know Your Property",
+            font=("Calibri", 24, "bold"),
+            text_color="#0066CC",
         )
-        self.header_label.place(relx=0.5, y=30, anchor="center")
+        self.header_label.grid(row=0, column=0, sticky="w")
 
-        # Location Details Label
+        # * Location Details Label
         self.location_label = ctk.CTkLabel(
             self.property_form_frame,
             text="🌐 Location Details",
-            font=("Calibri", 18, "bold"),
-            text_color="#007AFF",
+            font=("Calibri", 16, "bold"),
+            text_color="#0066CC",
+            fg_color="#F8F9FA",
+            corner_radius=8,
         )
-        self.location_label.place(x=30, y=80)
+        self.location_label.grid(
+            row=1,
+            column=0,
+            columnspan=2,
+            sticky="nsew",
+            padx=15,
+            pady=(15, 10),
+            ipady=10,
+        )
 
-        # District Option Menu Label
+        # * District Option Menu Label
         self.district_label = ctk.CTkLabel(
             self.property_form_frame,
             text="District:",
-            font=("Calibri", 16, "bold"),
+            font=("Calibri", 14, "bold"),
             text_color="#1D1D1F",
         )
-        self.district_label.place(x=30, y=130)
+        self.district_label.grid(row=2, column=0, sticky="w", padx=15, pady=(10, 5))
 
-        # District Option Menu
+        # * District Option Menu
         self.district_option_menu = ctk.CTkOptionMenu(
             self.property_form_frame,
-            values=["Loading..."],  # Initial value
-            width=240,
+            values=["Loading..."],
             height=40,
             text_color="black",
             dropdown_text_color="black",
-            fg_color="#E5E5E7",
-            button_color="#007AFF",
-            button_hover_color="#005FB8",
+            fg_color="#F8F9FA",
+            button_color="#0066CC",
+            button_hover_color="#0052A3",
             dropdown_fg_color="white",
-            dropdown_hover_color="#007AFF",  # Changed to match button_hover_color for consistency
+            dropdown_hover_color="#0066CC",
             command=self._on_district_selected,
-            state="disabled",  # Disable until districts are loaded
+            state="disabled",
         )
-        self.district_option_menu.place(x=130, y=125)
+        self.district_option_menu.grid(
+            row=2, column=1, sticky="nsew", padx=(0, 15), pady=(10, 5)
+        )
 
-        # Block Option Menu Label
+        # * Block Option Menu Label
         self.block_label = ctk.CTkLabel(
             self.property_form_frame,
             text="Block:",
-            font=("Calibri", 16, "bold"),
+            font=("Calibri", 14, "bold"),
             text_color="#1D1D1F",
         )
-        self.block_label.place(x=30, y=185)
+        self.block_label.grid(row=3, column=0, sticky="w", padx=15, pady=(10, 5))
 
-        # Block Option Menu
+        # * Block Option Menu
         self.block_option_menu = ctk.CTkOptionMenu(
             self.property_form_frame,
-            values=["Select Block"],  # Initial value
-            width=240,
+            values=["Select Block"],
             height=40,
             text_color="black",
             dropdown_text_color="black",
-            fg_color="#E5E5E7",
-            button_color="#007AFF",
-            button_hover_color="#005FB8",
+            fg_color="#F8F9FA",
+            button_color="#0066CC",
+            button_hover_color="#0052A3",
             dropdown_fg_color="white",
-            dropdown_hover_color="#007AFF",  # Changed to match button_hover_color for consistency
+            dropdown_hover_color="#0066CC",
             command=self._on_block_selected,
-            state="disabled",  # Disable until a district is selected
+            state="disabled",
         )
-        self.block_option_menu.place(x=130, y=180)
+        self.block_option_menu.grid(
+            row=3, column=1, sticky="nsew", padx=(0, 15), pady=(10, 5)
+        )
 
-        # Mouza Option Menu Label
+        # * Mouza Option Menu Label
         self.mouza_label = ctk.CTkLabel(
             self.property_form_frame,
             text="Mouza:",
-            font=("Calibri", 16, "bold"),
+            font=("Calibri", 14, "bold"),
             text_color="#1D1D1F",
         )
-        self.mouza_label.place(x=30, y=240)
+        self.mouza_label.grid(row=4, column=0, sticky="w", padx=15, pady=(10, 5))
 
-        # Mouza Option Menu
+        # * Mouza Option Menu
         self.mouza_option_menu = ctk.CTkOptionMenu(
             self.property_form_frame,
-            values=["Select Mouza"],  # Initial value
-            width=240,
+            values=["Select Mouza"],
             height=40,
             text_color="black",
             dropdown_text_color="black",
-            fg_color="#E5E5E7",
-            button_color="#007AFF",
-            button_hover_color="#005FB8",
+            fg_color="#F8F9FA",
+            button_color="#0066CC",
+            button_hover_color="#0052A3",
             dropdown_fg_color="white",
-            dropdown_hover_color="#007AFF",  # Changed to match button_hover_color for consistency
+            dropdown_hover_color="#0066CC",
             command=self._on_mouza_selected,
             dynamic_resizing=True,
-            state="disabled",  # Disable until a block is selected
+            state="disabled",
         )
-        self.mouza_option_menu.place(x=130, y=235)
+        self.mouza_option_menu.grid(
+            row=4, column=1, sticky="nsew", padx=(0, 15), pady=(10, 5)
+        )
 
-        # Property Details Label
+        # * Property Details Label
         self.property_details_label = ctk.CTkLabel(
             self.property_form_frame,
             text="📝 Property Details",
-            font=("Calibri", 18, "bold"),
-            text_color="#007AFF",
+            font=("Calibri", 16, "bold"),
+            text_color="#0066CC",
+            fg_color="#F8F9FA",
+            corner_radius=8,
         )
-        self.property_details_label.place(x=30, y=310)
+        self.property_details_label.grid(
+            row=5,
+            column=0,
+            columnspan=2,
+            sticky="nsew",
+            padx=15,
+            pady=(15, 10),
+            ipady=10,
+        )
 
-        # Property Type Label
+        # * Property Type Label
         self.property_type_label = ctk.CTkLabel(
             self.property_form_frame,
             text="Property Type:",
-            font=("Calibri", 16, "bold"),
-            text_color="black",
+            font=("Calibri", 14, "bold"),
+            text_color="#1D1D1F",
         )
-        self.property_type_label.place(x=35, y=360)
+        self.property_type_label.grid(
+            row=6, column=0, sticky="w", padx=15, pady=(10, 5)
+        )
 
-        # Khatian Radio Button
+        # * Radio buttons frame
+        self.radio_frame = ctk.CTkFrame(
+            self.property_form_frame, fg_color="transparent"
+        )
+        self.radio_frame.grid(row=6, column=1, sticky="w", padx=15, pady=(10, 5))
+        self.radio_frame.grid_columnconfigure((0, 1), weight=1)
+
+        # * Khatian Radio Button
         self.khatian_radio_btn = ctk.CTkRadioButton(
-            self.property_form_frame,
+            self.radio_frame,
             text="Khatian",
             variable=self.property_type_var,
             value="Khatian",
-            text_color="black",
-            fg_color="#007AFF",
-            hover_color="#005FB8",
+            text_color="#1D1D1F",
+            fg_color="#0066CC",
+            hover_color="#0052A3",
             command=self._on_property_type_change,
         )
-        self.khatian_radio_btn.place(x=150, y=365)
+        self.khatian_radio_btn.grid(row=0, column=0, sticky="w")
 
-        # Plot Radio Button
+        # * Plot Radio Button
         self.plot_radio_btn = ctk.CTkRadioButton(
-            self.property_form_frame,
+            self.radio_frame,
             text="Plot",
             variable=self.property_type_var,
             value="Plot",
-            text_color="black",
-            fg_color="#007AFF",
-            hover_color="#005FB8",
+            text_color="#1D1D1F",
+            fg_color="#0066CC",
+            hover_color="#0052A3",
             command=self._on_property_type_change,
         )
-        self.plot_radio_btn.place(x=270, y=365)
+        self.plot_radio_btn.grid(row=0, column=1, sticky="w", padx=(20, 0))
 
-        # Property Label (Khatian or Plot)
+        # * Property Label (Khatian or Plot)
         self.property_label = ctk.CTkLabel(
             self.property_form_frame,
             text="Khatian No:",
-            font=("Calibri", 16, "bold"),
-            text_color="black",
-        )
-        self.property_label.place(x=35, y=420)
-
-        # Property Entry (Khatian or Plot)
-        self.property_first_entry = ctk.CTkEntry(
-            self.property_form_frame,
-            placeholder_text="Khatian No",
-            width=120,
-            height=40,
-            fg_color="white",
+            font=("Calibri", 14, "bold"),
             text_color="#1D1D1F",
-            font=("Calibri", 16),
+        )
+        self.property_label.grid(row=7, column=0, sticky="w", padx=15, pady=(10, 5))
+
+        # * Property entries frame
+        self.property_entries_frame = ctk.CTkFrame(
+            self.property_form_frame, fg_color="transparent"
+        )
+        self.property_entries_frame.grid(
+            row=7, column=1, sticky="nsew", padx=(0, 15), pady=(10, 5)
+        )
+        self.property_entries_frame.grid_columnconfigure((0, 1), weight=1)
+
+        # * Property Entry (Khatian or Plot)
+        self.property_first_entry = ctk.CTkEntry(
+            self.property_entries_frame,
+            placeholder_text="Khatian No",
+            height=40,
+            fg_color="#F8F9FA",
+            text_color="#1D1D1F",
+            font=("Calibri", 14),
             corner_radius=8,
             border_color="#D1D1D6",
+            border_width=1,
         )
-        self.property_first_entry.place(x=130, y=415)
+        self.property_first_entry.grid(row=0, column=0, sticky="nsew", padx=(0, 5))
 
         self.property_second_entry = ctk.CTkEntry(
-            self.property_form_frame,
+            self.property_entries_frame,
             placeholder_text="Bata No",
-            width=110,
             height=40,
-            fg_color="white",
+            fg_color="#F8F9FA",
             text_color="#1D1D1F",
-            font=("Calibri", 16),
+            font=("Calibri", 14),
             corner_radius=8,
             border_color="#D1D1D6",
+            border_width=1,
         )
-        self.property_second_entry.place(x=260, y=415)
+        self.property_second_entry.grid(row=0, column=1, sticky="nsew", padx=(5, 0))
 
-        # Search Button
+        # * Buttons frame
+        self.buttons_frame = ctk.CTkFrame(
+            self.property_form_frame, fg_color="transparent"
+        )
+        self.buttons_frame.grid(
+            row=8, column=0, columnspan=2, sticky="nsew", padx=15, pady=(15, 10)
+        )
+        self.buttons_frame.grid_columnconfigure((0, 1), weight=1)
+
+        # * Search Button
         self.search_btn = ctk.CTkButton(
-            self.property_form_frame,
+            self.buttons_frame,
             text="🔎 Search",
-            width=150,
             height=45,
             font=("Calibri", 16, "bold"),
-            fg_color="#007AFF",
-            hover_color="#005FB8",
+            fg_color="#0066CC",
+            hover_color="#0052A3",
             corner_radius=10,
             command=self._on_search,
         )
-        self.search_btn.place(x=200, y=500)
+        self.search_btn.grid(row=0, column=1, sticky="nsew", padx=(5, 0))
 
-        # Clear Button
+        # * Clear Button
         self.clear_btn = ctk.CTkButton(
-            self.property_form_frame,
+            self.buttons_frame,
             text="🧹 Clear",
-            width=150,
             height=45,
             font=("Calibri", 16, "bold"),
-            fg_color="#007AFF",
-            hover_color="#005FB8",
+            fg_color="#6C757D",
+            hover_color="#5A6268",
             corner_radius=10,
             command=self._clear_form,
         )
-        self.clear_btn.place(x=40, y=500)
+        self.clear_btn.grid(row=0, column=0, sticky="nsew", padx=(0, 5))
 
-        # Status Message Label
+        # * Status Message Label
         self.status_label = ctk.CTkLabel(
             self.property_form_frame,
             text="Ready",
-            font=("Calibri", 16, "bold"),
-            text_color="green",
+            font=("Calibri", 14, "bold"),
+            text_color="#28A745",
+            fg_color="#F8F9FA",
+            corner_radius=8,
         )
-        self.status_label.place(relx=0.5, y=580, anchor="center")
+        self.status_label.grid(
+            row=9,
+            column=0,
+            columnspan=2,
+            sticky="nsew",
+            padx=15,
+            pady=(10, 15),
+            ipady=10,
+        )
 
-        # Results Panel
+        # * Results Panel
         self.results_frame = ctk.CTkFrame(
-            self, fg_color="transparent", corner_radius=10
+            self,
+            fg_color="#FFFFFF",
+            corner_radius=15,
+            border_width=1,
+            border_color="#E5E5E7",
         )
-        self.results_frame.pack(
-            side="right", expand=True, fill="both", padx=20, pady=20
-        )
+        self.results_frame.grid(row=0, column=1, sticky="nsew", padx=15, pady=15)
+        self.results_frame.grid_columnconfigure(0, weight=1)
+        self.results_frame.grid_rowconfigure(1, weight=1)
 
         self.results_label = ctk.CTkLabel(
             self.results_frame,
-            text="Search Results",
+            text="🔍 Search Results",
             font=("Calibri", 18, "bold"),
-            text_color="black",
+            text_color="#0066CC",
         )
-        self.results_label.pack(pady=(0, 10))
+        self.results_label.grid(row=0, column=0, sticky="nsew", padx=15, pady=(15, 10))
 
         # Replace Textbox with HtmlFrame for rich rendering
         self.results_browser = HtmlFrame(self.results_frame)
-        self.results_browser.pack(expand=True, fill="both")
+        self.results_browser.grid(row=1, column=0, sticky="nsew", padx=15, pady=10)
+
+        # * Buttons frame for results actions
+        self.results_buttons_frame = ctk.CTkFrame(
+            self.results_frame, fg_color="transparent"
+        )
+        self.results_buttons_frame.grid(
+            row=2, column=0, sticky="nsew", padx=15, pady=(10, 15)
+        )
+        self.results_buttons_frame.grid_columnconfigure((0, 1), weight=1)
 
         # Open in Browser Button
         self.open_browser_btn = ctk.CTkButton(
-            self.results_frame,
+            self.results_buttons_frame,
             text="🌐 Open in Browser",
-            width=200,
             height=40,
-            font=("Calibri", 16, "bold"),
-            fg_color="#34C759",  # iOS/macOS Green for success actions
-            hover_color="#28A745",
+            font=("Calibri", 14, "bold"),
+            fg_color="#28A745",
+            hover_color="#1e7e34",
             corner_radius=10,
             command=self._on_open_in_browser,
         )
-        self.open_browser_btn.pack(pady=10)
+        self.open_browser_btn.grid(row=0, column=0, sticky="nsew", padx=(0, 5))
 
         # Save as PDF Button using pywebview
         self.save_pdf_btn = ctk.CTkButton(
-            self.results_frame,
+            self.results_buttons_frame,
             text="💾 Save as PDF",
-            width=200,
             height=40,
-            font=("Calibri", 16, "bold"),
-            fg_color="#007AFF",
-            hover_color="#005FB8",
+            font=("Calibri", 14, "bold"),
+            fg_color="#0066CC",
+            hover_color="#0052A3",
             corner_radius=10,
             command=self._on_save_as_pdf,
         )
-        self.save_pdf_btn.pack(pady=10)
+        self.save_pdf_btn.grid(row=0, column=1, sticky="nsew", padx=(5, 0))
 
         # Load districts on startup
         self._load_districts()

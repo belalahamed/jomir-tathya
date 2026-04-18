@@ -1,6 +1,6 @@
-"""
-* App Screen Frame Module
-"""
+# * ====================================================================== * #
+# *                             App Screen Module                          * #
+# * ====================================================================== * #
 
 import customtkinter as ctk
 from PIL import Image
@@ -12,157 +12,282 @@ from .property_search_screen import PropertySearchScreen
 
 
 class AppScreen(ctk.CTkFrame):
-    """App Screen Frame UI"""
+    """
+    * App Screen Frame UI
+    """
 
     def __init__(self, parent_frame, root_app):
-        """App Frame UI Initialization"""
-
         """
-        * parent_frame -> it receives the reference of 'self.container_frame'(parent_frame) property of 'RootApp' instance
-        * root_app -> it receives the reference of 'RootApp'(self) instance
+        * App Screen Frame UI Initialization
         """
 
-        super().__init__(parent_frame, fg_color="white", corner_radius=0)
+        # * ================================================================================================================ * #
+        # * parent_frame -> it receives the reference of 'self.container_frame'(parent_frame) property of 'RootApp' instance * #
+        # * root_app -> it receives the reference of 'RootApp'(self) instance                                                * #
+        # * ================================================================================================================ * #
 
-        self.parent_frame = parent_frame  # * This is reference of 'self.container_frame'(parent_frame) of 'RootApp'
-        self.root_app = root_app  # * This is the reference of 'RootApp' instance
+        # * Create App Screen Frame
+        super().__init__(parent_frame, fg_color="#F8F9FA", corner_radius=0)
 
         # * Subscribe to AppState changes
         AppState.add_listener(self.change_header_btn)
 
-        # * Header Frame
+        # * ====================================================================== * #
+        # *                             Root App References                        * #
+        # * ====================================================================== * #
+
+        # * Reference of 'self.container_frame'(parent_frame) of 'RootApp'
+        self.parent_frame = parent_frame
+
+        # * Reference of 'RootApp' instance
+        self.root_app = root_app
+
+        # * ====================================================================== * #
+        # *              Grid Layout Configuration (App Screen Frame)              * #
+        # * ====================================================================== * #
+
+        self.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
+        self.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight=1)
+        self.grid_rowconfigure(0, weight=0)
+
+        # * ====================================================================== * #
+        # *                     Child Frames of App Screen Frame                   * #
+        # * ====================================================================== * #
+
+        # * ============== Header Frame =========== * #
+
+        # * Create Header Frame
         self.header_frame = ctk.CTkFrame(
             self,
             fg_color="#FFFFFF",
             corner_radius=0,
-            border_width=2,
+            border_width=0,
             border_color="#E5E5E7",
         )
-        self.header_frame.pack(side="top", fill="both", padx=0, pady=0, ipady=15)
+        self.header_frame.grid(
+            column=0, row=0, columnspan=7, sticky="nsew", pady=(0, 20)
+        )
 
-        # * Services Frame
+        # * Header Frame Grid Layout Configuration
+        self.header_frame.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)
+        self.header_frame.grid_rowconfigure(0, weight=0)
+
+        # * ============== Services Frame =========== * #
+
+        # * Create Services Frame
         self.services_frame = ctk.CTkFrame(
             self,
             fg_color="#FFFFFF",
-            corner_radius=10,
-            border_width=2,
-            border_color="#E5E5E7",
+            corner_radius=20,
+            border_width=0,
+            border_color="#E0E0E0",
         )
-        self.services_frame.pack(
-            after=self.header_frame, fill="both", padx=150, pady=30, ipady=20, ipadx=20
+        self.services_frame.grid(
+            column=1, row=1, columnspan=5, rowspan=5, sticky="nsew", padx=15, pady=15
         )
 
-        # * Services Label
-        self.services_label = ctk.CTkLabel(
+        # * Services Frame Grid Layout Configuration
+        self.services_frame.grid_columnconfigure((0, 1, 2, 3), weight=1)
+        self.services_frame.grid_rowconfigure(0, weight=2)
+        self.services_frame.grid_rowconfigure((1, 3), weight=1)
+        self.services_frame.grid_rowconfigure((2, 4), weight=3)
+
+        # * ============== Find Information Frame =========== * #
+
+        # * Create Find Information Frame
+        self.find_info_frame = ctk.CTkFrame(
             self.services_frame,
-            text="Services",
-            text_color="white",
-            font=("Calibri", 28),
-            fg_color="#007AFF",
+            fg_color="#FFFFFF",
+            corner_radius=15,
+            border_width=1,
+            border_color="#E8E8E8",
         )
-        self.services_label.pack(side="top", fill="both", pady=10, padx=1, ipady=10)
+        self.find_info_frame.grid(
+            column=0, row=2, columnspan=4, sticky="nsew", padx=20, pady=(10, 15)
+        )
 
-        # * Find Information Frame
-        self.find_info_frame = ctk.CTkFrame(self.services_frame, fg_color="#FFFFFF")
-        self.find_info_frame.pack(side="top", fill="both", padx=5, pady=5)
+        # * Find Information Frame Grid Layout Configuration
+        self.find_info_frame.grid_columnconfigure((0, 1, 2, 3), weight=1)
+        self.find_info_frame.grid_rowconfigure(0, weight=1)
 
-        # * Check Status Frame
-        self.check_status_frame = ctk.CTkFrame(self.services_frame, fg_color="#FFFFFF")
-        self.check_status_frame.pack(side="top", fill="both", padx=5, pady=5)
+        # * ============== Check Status Frame =========== * #
 
-        # * Header Logo
+        # * Create Check Status Frame
+        self.check_status_frame = ctk.CTkFrame(
+            self.services_frame,
+            fg_color="#FFFFFF",
+            corner_radius=15,
+            border_width=1,
+            border_color="#E8E8E8",
+        )
+        self.check_status_frame.grid(
+            column=0, row=4, columnspan=4, sticky="nsew", padx=20, pady=(10, 20)
+        )
+
+        # * Check Status Frame Grid Layout Configuration
+        self.check_status_frame.grid_columnconfigure((0, 1, 2, 3), weight=1)
+        self.check_status_frame.grid_rowconfigure(0, weight=1)
+
+        # * ====================================================================== * #
+        # *                             Elements of Frames                         * #
+        # * ====================================================================== * #
+
+        # * ============== Logo =========== * #
+
+        # * Create Logo Image
         self.logo = ctk.CTkImage(light_image=Image.open(APP_LOGO), size=(50, 50))
 
+        # * Create Logo Label
         self.logo_label = ctk.CTkLabel(
             self.header_frame,
             image=self.logo,
             text=" BANGLARBHUMI",
-            text_color="#007AFF",
-            font=("Calibri", 35, "bold"),
+            text_color="#0066CC",
+            font=("Calibri", 32, "bold"),
             compound="left",
         )
-        self.logo_label.pack(side="left", padx=50)
+        self.logo_label.grid(
+            column=0, row=0, columnspan=4, sticky="w", padx=25, pady=10
+        )
 
-        # * Header Login Button
+        # * ============== Login Button =========== * #
+
+        # * Create Login Button
         self.login_btn = ctk.CTkButton(
             self.header_frame,
-            width=80,
-            height=40,
+            width=90,
+            height=38,
             text="Login",
             text_color="white",
-            fg_color="#007AFF",
-            font=("Calibri", 18),
+            fg_color="#0066CC",
+            hover_color="#0052A3",
+            font=("Calibri", 16, "bold"),
+            corner_radius=8,
             command=self.open_login_screen,
         )
-        self.login_btn.pack(side="right", padx=50)
+        self.login_btn.grid(column=6, row=0, sticky="e", padx=25, pady=10)
 
-        # * Header Logout Button
+        # * ============== Logout Button =========== * #
+
+        # * Create Logout Button
         self.logout_btn = ctk.CTkButton(
             self.header_frame,
-            width=80,
-            height=40,
+            width=90,
+            height=38,
             text="Logout",
             text_color="white",
-            fg_color="#007AFF",
-            font=("Calibri", 18),
+            fg_color="#DC3545",
+            hover_color="#bb2d3b",
+            font=("Calibri", 16, "bold"),
+            corner_radius=8,
             command=self.handle_logout_btn,
         )
 
-        # * Find Information Label
-        self.find_info_label = ctk.CTkLabel(
-            self.find_info_frame,
-            text="Find Information",
-            text_color="black",
-            font=("Calibri", 25),
-        )
-        self.find_info_label.pack(side="top", anchor="w", padx=20)
+        # * ============== Services Label =========== * #
 
-        # * Know Your Property Card
+        # * Create Services Label
+        self.services_label = ctk.CTkLabel(
+            self.services_frame,
+            text="🎯 Our Services",
+            text_color="white",
+            font=("Calibri", 34, "bold"),
+            fg_color="#0066CC",
+        )
+        self.services_label.grid(
+            column=0, row=0, columnspan=4, sticky="nsew", padx=25, pady=25
+        )
+
+        # * ============== Find Information Label =========== * #
+
+        # * Create Find Information Label
+        self.find_info_label = ctk.CTkLabel(
+            self.services_frame,
+            text="📋 Find Information",
+            text_color="#0066CC",
+            font=("Calibri", 22, "bold"),
+        )
+        self.find_info_label.grid(
+            column=0, row=1, columnspan=4, sticky="w", padx=20, pady=(15, 10)
+        )
+
+        # * ============== Know Your Property Button =========== * #
+
+        # * Create Know Your Property Button
         self.know_your_property_card = ctk.CTkButton(
             self.find_info_frame,
-            text="Know Your Property",
-            fg_color="green",
-            font=("Calibri", 20, "bold"),
-            hover_color="#044a04",
+            text="🏠 Know Your Property",
+            fg_color="#28A745",
+            hover_color="#1e7e34",
+            text_color="white",
+            font=("Calibri", 17, "bold"),
+            corner_radius=12,
             command=self.open_property_search_screen,
         )
-        self.know_your_property_card.pack(
-            side="left", padx=40, pady=30, ipadx=20, ipady=30
+        self.know_your_property_card.grid(
+            column=0, row=0, sticky="nsew", padx=10, pady=12
         )
 
-        # * RS-LR Info Card
+        # * ============== RS-LR Info Button =========== * #
+
+        # * Create RS-LR Info Button
         self.rs_lr_info_card = ctk.CTkButton(
             self.find_info_frame,
-            text="RS-LR Information",
-            fg_color="green",
-            font=("Calibri", 20, "bold"),
-            hover_color="#044a04",
+            text="📑 RS-LR Information",
+            fg_color="#17A2B8",
+            hover_color="#0f6674",
+            text_color="white",
+            font=("Calibri", 17, "bold"),
+            corner_radius=12,
         )
-        self.rs_lr_info_card.pack(side="left", padx=40, pady=30, ipadx=20, ipady=30)
+        self.rs_lr_info_card.grid(column=1, row=0, sticky="nsew", padx=10, pady=12)
 
-        # * Check Status Label
+        # * ============== Check Status Label =========== * #
+
+        # * Create Check Status Label
         self.check_status_label = ctk.CTkLabel(
-            self.check_status_frame,
-            text="Check Status",
-            text_color="black",
-            font=("Calibri", 25),
+            self.services_frame,
+            text="✅ Check Status",
+            text_color="#0066CC",
+            font=("Calibri", 22, "bold"),
         )
-        self.check_status_label.pack(side="top", anchor="w", padx=20)
+        self.check_status_label.grid(
+            column=0, row=3, columnspan=4, sticky="w", padx=20, pady=(15, 10)
+        )
 
-        # * Mutation Plot Khatian Status Card
+        # * ============== Mutation Plot Khatian Status Button =========== * #
+
+        # * Create Mutation Plot Khatian Status Button
         self.mutation_plot_khatian_card = ctk.CTkButton(
             self.check_status_frame,
-            text="Mutation Plot Khatian Status",
-            fg_color="green",
-            font=("Calibri", 20, "bold"),
-            hover_color="#044a04",
+            text="⏱️ Mutation Plot Khatian Status",
+            fg_color="#FFC107",
+            hover_color="#d39e00",
+            text_color="#333333",
+            font=("Calibri", 17, "bold"),
+            corner_radius=12,
         )
-        self.mutation_plot_khatian_card.pack(
-            side="left", padx=40, pady=30, ipadx=20, ipady=30
+        self.mutation_plot_khatian_card.grid(
+            column=0, row=0, sticky="nsew", padx=10, pady=12
         )
 
+        # * ============== Mutation Status Button =========== * #
+
+        # * Create Mutation Status Button
+        self.mutation_status_card = ctk.CTkButton(
+            self.check_status_frame,
+            text="📊 Mutation Status",
+            fg_color="#6F42C1",
+            hover_color="#5a32a3",
+            text_color="white",
+            font=("Calibri", 17, "bold"),
+            corner_radius=12,
+        )
+        self.mutation_status_card.grid(column=1, row=0, sticky="nsew", padx=10, pady=12)
+
     def open_login_screen(self):
-        """Handling Login Screen Opening"""
+        """
+        * Handling Login Screen Opening
+        """
 
         # * Remove the app screen frame
         self.pack_forget()
@@ -174,24 +299,30 @@ class AppScreen(ctk.CTkFrame):
         self.root_app.show_frame(self.login_screen_frame)
 
     def change_header_btn(self):
-        """Handles the login and logout button visibility"""
+        """
+        * Handles the login and logout button visibility
+        """
 
         if AppState.is_logged_in:
-            self.login_btn.pack_forget()
-            self.logout_btn.pack(side="right", padx=50)
+            self.login_btn.grid_remove()
+            self.logout_btn.grid(column=6, row=0, sticky="e", padx=25, pady=10)
         else:
-            self.logout_btn.pack_forget()
-            self.login_btn.pack(side="right", padx=50)
+            self.logout_btn.grid_remove()
+            self.login_btn.grid(column=6, row=0, sticky="e", padx=25, pady=10)
 
     def handle_logout_btn(self):
-        """Handling Logout Button Click"""
+        """
+        * Handling Logout Button Click
+        """
 
         AppState.set_login_state(False, None)
 
     def open_property_search_screen(self):
-        """Open Property Search Screen"""
+        """
+        * Open Property Search Screen
+        """
 
-        if not AppState.is_logged_in:
+        if AppState.is_logged_in:
             # * Remove App Screen Frame
             self.pack_forget()
 
