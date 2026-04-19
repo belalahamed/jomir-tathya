@@ -19,7 +19,8 @@ class LocationEntryForm(ctk.CTkFrame):
         * Initializtion of Location Entry Form
         """
 
-        super().__init__(parent_frame, fg_color="red")
+        # * Create Location Entry Form Frame using ctk.CTkFrame (parent class)
+        super().__init__(parent_frame, fg_color="transparent")
 
         # * =============== Grid Configuration =============== * #
 
@@ -39,7 +40,14 @@ class LocationEntryForm(ctk.CTkFrame):
         # * =============== UI Elements =============== * #
 
         # * Location Details Label
-        self.location_details_label = ctk.CTkLabel(self, text="🌐 Location Details")
+        self.location_details_label = ctk.CTkLabel(
+            self,
+            text="🌐 Location Details",
+            font=("Calibri", 16, "bold"),
+            text_color="#0066CC",
+            fg_color="#F8F9FA",
+            corner_radius=8,
+        )
         self.location_details_label.grid(
             row=0,
             column=0,
@@ -51,13 +59,27 @@ class LocationEntryForm(ctk.CTkFrame):
         )
 
         # * District Label
-        self.district_label = ctk.CTkLabel(self, text="District:")
+        self.district_label = ctk.CTkLabel(
+            self,
+            text="District:",
+            font=("Calibri", 14, "bold"),
+            text_color="#1D1D1F",
+        )
         self.district_label.grid(row=1, column=0, sticky="w", padx=15, pady=(10, 5))
 
         # * District Option Menu
         self.district_option_menu = ctk.CTkOptionMenu(
             self,
             values=["Loading..."],
+            height=40,
+            text_color="#1D1D1F",
+            dropdown_text_color="#1D1D1F",
+            fg_color="#F8F9FA",
+            button_color="#0066CC",
+            button_hover_color="#0052A3",
+            dropdown_fg_color="#FFFFFF",
+            dropdown_hover_color="#0066CC",
+            corner_radius=8,
             dynamic_resizing=False,
             state="disabled",
             command=self.on_district_selected,
@@ -67,13 +89,27 @@ class LocationEntryForm(ctk.CTkFrame):
         )
 
         # * Block Label
-        self.block_label = ctk.CTkLabel(self, text="Block:")
+        self.block_label = ctk.CTkLabel(
+            self,
+            text="Block:",
+            font=("Calibri", 14, "bold"),
+            text_color="#1D1D1F",
+        )
         self.block_label.grid(row=2, column=0, sticky="w", padx=15, pady=(10, 5))
 
         # * Block Option Menu
         self.block_option_menu = ctk.CTkOptionMenu(
             self,
             values=["Select Block"],
+            height=40,
+            text_color="#1D1D1F",
+            dropdown_text_color="#1D1D1F",
+            fg_color="#F8F9FA",
+            button_color="#0066CC",
+            button_hover_color="#0052A3",
+            dropdown_fg_color="#FFFFFF",
+            dropdown_hover_color="#0066CC",
+            corner_radius=8,
             dynamic_resizing=False,
             state="disabled",
             command=self.on_block_selected,
@@ -83,13 +119,27 @@ class LocationEntryForm(ctk.CTkFrame):
         )
 
         # * Mouza Label
-        self.mouza_label = ctk.CTkLabel(self, text="Mouza:")
+        self.mouza_label = ctk.CTkLabel(
+            self,
+            text="Mouza:",
+            font=("Calibri", 14, "bold"),
+            text_color="#1D1D1F",
+        )
         self.mouza_label.grid(row=3, column=0, sticky="w", padx=15, pady=(10, 5))
 
         # * Mouza Option Menu
         self.mouza_option_menu = ctk.CTkOptionMenu(
             self,
             values=["Select Mouza"],
+            height=40,
+            text_color="#1D1D1F",
+            dropdown_text_color="#1D1D1F",
+            fg_color="#F8F9FA",
+            button_color="#0066CC",
+            button_hover_color="#0052A3",
+            dropdown_fg_color="#FFFFFF",
+            dropdown_hover_color="#0066CC",
+            corner_radius=8,
             dynamic_resizing=False,
             state="disabled",
             command=self.on_mouza_selected,
@@ -98,7 +148,7 @@ class LocationEntryForm(ctk.CTkFrame):
             row=3, column=1, sticky="nsew", padx=(0, 15), pady=(10, 5)
         )
 
-        # * Load Districts On Startup
+        # * Load Districts on Location Entry Form Initialization
         self.load_districts()
 
     def load_districts(self):
@@ -127,7 +177,6 @@ class LocationEntryForm(ctk.CTkFrame):
         self.district_list = district_list
 
         if self.district_list:
-            # Using List Comprehension to create district names list from districts_list
             district_names = [
                 district.get("eng_dname")
                 for district in self.district_list
