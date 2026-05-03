@@ -14,13 +14,16 @@ class LocationEntryForm(ctk.CTkFrame):
     * Location Entry Form
     """
 
-    def __init__(self, parent_frame):
+    def __init__(self, parent_frame, root_frame):
         """
         * Initializtion of Location Entry Form
         """
 
         # * Create Location Entry Form Frame using ctk.CTkFrame (parent class)
         super().__init__(parent_frame, fg_color="transparent")
+
+        # * Get Root Frame to handle root frame 'status_message_label' property
+        self.root_frame = root_frame
 
         # * =============== Grid Configuration =============== * #
 
@@ -185,10 +188,13 @@ class LocationEntryForm(ctk.CTkFrame):
             district_options = ["Select District"] + district_names
             self.district_option_menu.configure(values=district_options, state="normal")
             self.district_option_menu.set("Select District")
-
+            self.root_frame.status_message_label.configure(text="✅ Districts Loaded.")
         else:
             self.district_option_menu.configure(values=["Select district"])
             self.district_option_menu.set("Select District")
+            self.root_frame.status_message_label.configure(
+                text="❌ Districts loading failed!", text_color="red"
+            )
 
     def on_district_selected(self, selected_district_name):
         """
@@ -248,10 +254,13 @@ class LocationEntryForm(ctk.CTkFrame):
             block_options = ["Select Block"] + block_names
             self.block_option_menu.configure(values=block_options, state="normal")
             self.block_option_menu.set("Select Block")
-
+            self.root_frame.status_message_label.configure(text="✅ Blocks Loaded.")
         else:
             self.block_option_menu.configure(values=["Select Block"], state="disabled")
             self.block_option_menu.set("Select Block")
+            self.root_frame.status_message_label.configure(
+                text="❌ Blocks loading failed!", text_color="red"
+            )
 
     def on_block_selected(self, selected_block_name):
         """
@@ -317,9 +326,13 @@ class LocationEntryForm(ctk.CTkFrame):
             mouza_options = ["Select Mouza"] + mouza_names
             self.mouza_option_menu.configure(values=mouza_options, state="normal")
             self.mouza_option_menu.set("Select Mouza")
+            self.root_frame.status_message_label.configure(text="✅ Mouzas Loaded.")
         else:
             self.mouza_option_menu.configure(
                 values=["No Mouzas Found"], state="disabled"
+            )
+            self.root_frame.status_message_label.configure(
+                text="❌ Mouzas loading failed!", text_color="red"
             )
 
     def on_mouza_selected(self, selected_mouza_name):

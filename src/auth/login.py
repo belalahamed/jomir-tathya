@@ -69,6 +69,7 @@ class LoginService:
 
         cookies_dict = session.cookies.get_dict()
         cookies = "; ".join(f"{key}={value}" for key, value in cookies_dict.items())
+        print(cookies)
         return cookies
 
     def generate_captcha(self):
@@ -163,7 +164,7 @@ class LoginService:
         }
 
         data = {
-            "userType": encode_user_type("2"),
+            "userType": encode_user_type("1"),
             "username": encode_user_id(username),
             "password": encrypt_password(password, self.salt),
             "saltHashtext": self.salt,
@@ -175,6 +176,7 @@ class LoginService:
         try:
             response = session.post(url=url, headers=headers, data=data)
             response_data = response.json()
+            print(response_data)
             return response_data
         except Exception as e:
             logging.exception("An error occurred: ", e)

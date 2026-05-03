@@ -9,6 +9,7 @@ from assets import app_logo as APP_LOGO
 from ..store import AppState
 from .login_screen import LoginScreen
 from .property_search_screen import PropertySearchScreen
+from .plot_khatian_status_screen import PlotKhatianStatusScreen
 
 
 class AppScreen(ctk.CTkFrame):
@@ -265,6 +266,7 @@ class AppScreen(ctk.CTkFrame):
             text_color="#333333",
             font=("Calibri", 17, "bold"),
             corner_radius=12,
+            command=self.open_mutation_status_screen,
         )
         self.mutation_plot_khatian_card.grid(
             column=0, row=0, sticky="nsew", padx=10, pady=12
@@ -322,7 +324,7 @@ class AppScreen(ctk.CTkFrame):
         * Open Property Search Screen
         """
 
-        if AppState.is_logged_in:
+        if not AppState.is_logged_in:
             # * Remove App Screen Frame
             self.pack_forget()
 
@@ -333,5 +335,23 @@ class AppScreen(ctk.CTkFrame):
             # * Display Property Search Screen in Parent Frame in Root App
             self.root_app.show_frame(self.property_search_screen_frame)
 
+        else:
+            self.open_login_screen()
+
+    def open_mutation_status_screen(self):
+        """
+        * Open Plot Khatian Mutation Status Screen
+        """
+
+        if AppState.is_logged_in:
+            # * Remove App Screen Frame
+            self.pack_forget()
+
+            # * Create Mutation Status Screen Instance
+            self.mutation_status_screen_frame = PlotKhatianStatusScreen(
+                self.parent_frame, self.root_app, session_cookies=AppState.cookies
+            )
+            # * Display Screen
+            self.root_app.show_frame(self.mutation_status_screen_frame)
         else:
             self.open_login_screen()
